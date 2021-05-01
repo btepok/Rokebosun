@@ -1,15 +1,16 @@
 import OsuApi
+import image_creator
 import telebot
 import configparser
 import configwrite
 
-bot = telebot.TeleBot('<token>')
+bot = telebot.TeleBot('<telegram_bot_token_here>')
 
 
 @bot.message_handler(commands=['start'])
 def start_reg(message):
     if configwrite.is_exist(message.chat.id):
-        bot.send_message(message.chat.id, "Ты дэб или перерешать акк хочешь?")
+        bot.send_message(message.chat.id, "Ты дэб или перерегать акк хочешь?")
 
     else:
         config = configparser.ConfigParser()
@@ -18,7 +19,7 @@ def start_reg(message):
         config.add_section("User")
         config.set("User", "telegram_id", str(message.chat.id))
 
-        bot.send_message(message.chat.id, "Напиши ник осу акка")
+        bot.send_message(message.chat.id, "Напиши сюда свой ник в осу")
         bot.register_next_step_handler(message, user_name, config)
 
 
@@ -31,7 +32,7 @@ def user_name(message, config):
         name = data["username"]
         pp = int(data["statistics"]["pp"])
         play_count = data["statistics"]["play_count"]
-        rank = data["statistics"]["pp_rank"]
+        rank = data["statistics"]["global_rank"]
 
         bot.send_message(message.chat.id, f"{name}, нафармил {pp}pp за {play_count} игр. Ранк #{rank}")
 
@@ -84,15 +85,13 @@ def start_reg(message):
         user_id = str(account.get("User", "osu_id"))
 
         data = OsuApi.recent_scores(user_id)
-        print(data)
+        image = image_creator.recent_score_img(data)
 
         for i in range(len(data)):
             url = data[i]["beatmap"]["url"]
             title = data[i]["beatmapset"]["title"]
             artist = data[i]["beatmapset"]["artist"]
             maper = data[i]["beatmapset"]["creator"]
-
-            print(data[i]["perfect"])
 
             if (data[i]["accuracy"]) == 1:
                 fc = "SSнул"
@@ -108,8 +107,13 @@ def start_reg(message):
             bot.send_message(message.chat.id, f"{fc} мапу <a href='{url}'>{artist}: {title}</a> от {maper}",
                              parse_mode='HTML', disable_web_page_preview=True)
 
+            cover = data[i]["beatmapset"]["covers"]['cover']
+
+            with open(image, 'rb') as photo:
+                bot.send_photo(message.chat.id, photo)
+
     except Exception as e:
-        bot.send_message(message.chat.id, "Зарегайся сначала")
+        bot.send_message(message.chat.id, "Зарегайся сначалаs")
         print(e)
 
 

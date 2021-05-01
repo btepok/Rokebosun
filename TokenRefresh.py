@@ -47,8 +47,8 @@ def write_token(access_token, refresh_token):
 def refresh_access_token():
     response = requests.post(url,
                              data={'grant_type': 'refresh_token',
-                                   'client_id': '<id>',
-                                   'client_secret': '<client_secret_code>',
+                                   'client_id': '6943',
+                                   'client_secret': 'tqqnIOc7BByZyuCHQOBJ7ReCLfBjKWlBuHUl5AoL',
                                    'redirect_uri': 'https://example.com',
                                    'refresh_token': f'{open_token("get_refresh_token")}'
                                    },

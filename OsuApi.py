@@ -12,6 +12,7 @@ def account_data(username):
                                      "Authorization": f"Bearer {token}"})
     return json.loads(response.text)
 
+print(account_data('not_betepok3'))
 
 def write_json(data):  # for develop
     with open("json.json", "w") as file:
@@ -77,7 +78,7 @@ def short_info(username, new_user):
     name = data["username"]
     pp = int(data["statistics"]["pp"])
     play_count = data["statistics"]["play_count"]
-    rank = data["statistics"]["pp_rank"]
+    rank = data["statistics"]["global_rank"]
 
     if new_user == "new_user":
         return f"{name}, нафармил {pp}pp за {play_count} игр. Ранк #{rank}"
